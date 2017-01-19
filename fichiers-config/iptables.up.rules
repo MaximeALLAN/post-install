@@ -1,0 +1,157 @@
+# /etc/iptables.up.rules
+# Script qui démarre les règles de filtrage IPv4
+# Formation Debian GNU/Linux par Alexis de Lattre
+# http://formation-debian.via.ecp.fr/
+
+# iptables-restore(8) remet implicitement à zéro toutes les règles
+
+# Les instructions qui suivent concernent la table « filter »,
+# c'est-à-dire… le filtrage.
+*filter
+
+#########################
+# Politiques par défaut #
+#########################
+# Les politiques par défaut déterminent le devenir d'un paquet auquel
+# aucune règle spécifique ne s'applique.
+
+# Les connexions entrantes sont bloquées par défaut
+-P INPUT DROP
+# Les connexions destinées à être routées sont acceptées par défaut
+-P FORWARD ACCEPT
+# Les connexions sortantes sont acceptées par défaut
+-P OUTPUT ACCEPT
+
+######################
+# Règles de filtrage #
+######################
+# Nous précisons ici des règles spécifiques pour les paquets vérifiant
+# certaines conditions.
+
+# Pas de filtrage sur l'interface de "loopback"
+-A INPUT -i lo -j ACCEPT
+
+# Accepter le protocole ICMP (notamment le ping)
+-A INPUT -p icmp -j ACCEPT
+
+# Accepter le protocole IGMP (pour le multicast)
+-A INPUT -p igmp -j ACCEPT
+
+# Accepter les packets entrants relatifs à des connexions déjà
+# établies : cela va plus vite que de devoir réexaminer toutes
+# les règles pour chaque paquet.
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Décommentez la ligne suivante pour que le serveur SSH éventuel
+# soit joignable de l'extérieur
+#-A INPUT -p tcp --dport ssh -j ACCEPT
+
+# Décommentez la ligne suivante pour que le serveur de courrier éventuel soit
+# joignable de l'extérieur. Laissez bien smtps et submission si vous avez
+# activé les services SMTPS et soumission de messages… L'option --dports
+# permet de traiter plusieurs ports en une fois.
+#-A INPUT -p tcp --dports smtp,smtps,submission -j ACCEPT
+
+# Décommentez les deux lignes suivantes pour que le serveur de noms
+# éventuel soit joignable de l'extérieur.
+#-A INPUT -p tcp --dport domain -j ACCEPT
+#-A INPUT -p udp --dport domain -j ACCEPT
+
+# Décommentez la ligne suivante pour que le serveur Web éventuel
+# soit joignable de l'extérieur.
+#-A INPUT -p tcp --dport http -j ACCEPT
+# Si vous avez activé le HTTPS…
+#-A INPUT -p tcp --dport https -j ACCEPT
+
+# Décommentez les deux lignes suivantes pour que le serveur d'impression
+# éventuel soit joignable de l'extérieur.
+#-A INPUT -p tcp --dport ipp -j ACCEPT
+#-A INPUT -p udp --dport ipp -j ACCEPT
+
+# Décommentez les deux lignes suivantes pour que le serveur Samba
+# éventuel soit joignable de l'extérieur.
+#-A INPUT -p tcp --dport netbios-ssn -j ACCEPT
+#-A INPUT -p udp --dport netbios-ssn -j ACCEPT
+
+# Décommentez la ligne suivante pour que des clients puissent se connecter
+# à l'ordinateur par XDMCP.
+#-A INPUT -p udp --dport xdmcp -j ACCEPT
+
+# Décommentez la ligne suivante pour que l'ordinateur puisse se connecter
+# par XDMCP à une machine distante).
+#-A INPUT -p tcp --dport x11-1 -j ACCEPT
+
+# Décommentez la ligne suivante pour pouvoir recevoir des flux VideoLAN.
+#-A INPUT -p udp --dport 1234 -j ACCEPT
+
+# Décommentez la ligne suivante pour pouvoir recevoir des annonces SAP
+# (ce sont des annonces de session multicast).
+#-A INPUT -p udp -d 224.2.127.254 --dport 9875 -j ACCEPT
+
+# Décommentez les 3 lignes suivantes pour pouvoir utiliser GnomeMeeting
+#-A INPUT -p tcp --dport 30000:33000 -j ACCEPT
+#-A INPUT -p tcp --dport 1720 -j ACCEPT
+#-A INPUT -p udp --dport 5000:5006 -j ACCEPT
+
+# Décommentez la ligne suivante pour pouvoir partager de la musique par
+# DAAP.
+#-A INPUT -p tcp --dport daap -j ACCEPT
+
+# Décommentez la ligne suivante pour que votre ordinateur
+# annonce son nom et ses services par mDNS sur le réseau local (cela
+# permet de le contacter sous « son nom d'hôte ».local).
+#-A INPUT -p udp -d 224.0.0.251 --dport mdns -j ACCEPT
+
+# La règle par défaut pour la chaine INPUT devient REJECT (contrairement
+# à DROP qui ignore les paquets, avec REJECT, l'expéditeur est averti
+# du refus). Il n'est pas possible de mettre REJECT comme politique par
+# défaut. Au passage, on note les paquets qui vont être jetés, ça peut
+# toujours servir.
+-A INPUT -j LOG --log-prefix "paquet IPv4 inattendu "
+-A INPUT -j REJECT
+
+COMMIT
+
+# Les instructions qui suivent concernent la table « nat ».
+*nat
+
+########################
+# Partage de connexion #
+########################
+
+# Décommentez la ligne suivante pour que le système fasse office de
+# routeur NAT et remplacez « eth0 » par le nom de l'interface
+# connectée à Internet.
+#-A POSTROUTING -o eth0 -j MASQUERADE
+
+
+########################
+# Redirections de port #
+########################
+
+# Décommentez la ligne suivante pour que les requêtes TCP reçues sur
+# le port 80 de l'interface eth0 soient redirigées à la machine dont
+# l'adresse IPv4 est 192.168.0.3 sur son port 80 (la réponse à la
+# requête sera transférée au client).
+#-A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination 192.168.0.3:80
+
+COMMIT
+
+####################
+# Problème de MTU… #
+####################
+
+# Les instructions qui suivent concernent la table « mangle », c'est
+# à dire l'altération des paquets
+*mangle
+
+# Si la connexion que vous partagez est une connexion ADSL directement gérée
+# par votre ordinateur, vous serez probablement confronté au fameux problème du
+# MTU. En résumé, le problème vient du fait que le MTU de la liaison entre
+# votre fournisseur d'accès et le serveur NAT est un petit peu inférieur au MTU
+# de la liaison Ethernet qui relie le serveur NAT aux machines qui sont
+# derrière le NAT. Pour résoudre ce problème, décommentez la ligne suivante et
+# remplacez « eth0 » par le nom de l'interface connectée à Internet.
+#-A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS -o eth0 --clamp-mss-to-pmtu
+
+COMMIT

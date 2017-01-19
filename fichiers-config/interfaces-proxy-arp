@@ -1,0 +1,53 @@
+# /etc/network/interfaces
+# Fichier de configuration d'exemple des interfaces réseau
+# pour faire un Proxy-ARP
+# Formation Debian GNU/Linux par Alexis de Lattre
+# http://formation-debian.via.ecp.fr/
+
+# Plus d'informations dans "man interfaces" et "man route"
+
+
+# L'interface de loopback
+auto lo
+iface lo inet loopback
+    # Activation du "forwarding IP" et du "proxy-arp" au niveau du noyau :
+    up echo "1" > /proc/sys/net/ipv4/ip_forward
+    up echo "1" > /proc/sys/net/ipv4/conf/all/proxy_arp
+
+# Configuration de l'interface eth0, connectée au réseau extérieur
+auto eth0
+iface eth0 inet static
+    # Adresse IP du proxy-arp :
+    address 192.168.0.12
+    # Masque de sous-réseau du réseau extérieur :
+    netmask 255.255.255.0
+    # Adresse de la passerelle du réseau extérieur :
+    gateway 192.168.0.1
+
+# Configuration de l'interface eth1, connectée à client1
+auto eth1
+iface eth1 inet static
+    # Adresse IP du proxy-arp :
+    address 192.168.0.12
+    # Masque du sous-réseau du réseau extérieur :
+    netmask 255.255.255.0
+    # Route qui dit que client1 est derrière eth1 :
+    up route add 192.168.0.42 dev eth1
+    # Suppression d'une route ajoutée à tort par la ligne précédente
+    # 192.168.0.0 = adresse du réseau extérieur
+    # 255.255.255.0 = masque de sous-réseau du réseau extérieur
+    up route del -net 192.168.0.0 netmask 255.255.255.0 dev eth1
+
+# Configuration de l'interface eth2, connectée à client2
+auto eth2
+iface eth2 inet static
+    # Adresse IP du proxy-arp :
+    address 192.168.0.12
+    # Masque du sous-réseau du réseau extérieur :
+    netmask 255.255.255.0
+    # Route qui dit que client2 est derrière eth2 :
+    up route add 192.168.0.43 dev eth2
+    # Suppression d'une route ajoutée à tort par la ligne précédente
+    # 192.168.0.0 = adresse du réseau extérieur
+    # 255.255.255.0 = masque de sous-réseau du réseau extérieur
+    up route del -net 192.168.0.0 netmask 255.255.255.0 dev eth2

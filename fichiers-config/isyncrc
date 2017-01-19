@@ -1,0 +1,29 @@
+# ~/.isyncrc
+# Fichier de configuration d'isync
+# Formation Debian GNU/Linux par Alexis de Lattre
+# http://formation-debian.via.ecp.fr/
+
+# Plus d'information dans "man isync"
+
+# Efface les messages qui sont marqués pour être effacés sur le portable
+# et sur le serveur
+Expunge yes
+# Les messages qui existent sur le portable mais pas sur le serveur sont
+# effacés
+Delete yes
+
+# Répertoire contenant les mails sur le portable
+MailDir ~/mail/
+# Répertoire contenant les mails sur le serveur
+Folder mail/
+
+# Nom DNS du serveur :
+Host serveur.exemple.org
+# Commande à exécuter pour joindre le serveur IMAP via une connexion SSH
+Tunnel "ssh -q -C toto@serveur.exemple.org /usr/sbin/imapd"
+# Pas de SSL puisqu'on sécurise la connexion avec le tunnel SSH
+RequireSSL no
+
+# Génère la liste des mailboxes à partir des répertoires présents sur le
+# portable et sur le serveur
+OneToOne yes

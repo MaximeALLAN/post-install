@@ -1,0 +1,492 @@
+% ~/.slrnrc
+% Fichier de configuration de Slrn
+% Formation Debian GNU/Linux par Alexis de Lattre
+% http://formation-debian.via.ecp.fr/
+
+% Plus d'informations dans le fichier "/usr/share/doc/slrn/manual.txt.gz"
+
+%
+%% 1. Mon identité
+%
+
+% Le header "From:" est généré à partir des 3 paramètres suivants :
+set username "robert.dupont"
+set hostname "laposte.net"
+set realname "Robert Dupont"
+% Avec l'exemple ci-dessus, ça donne le champ "From:" suivant :
+% From: Robert Dupont <robert.dupont@laposte.net>
+
+% Décommentez la ligne suivante si vous voulez que les réponses en perso à
+% vos posts soient envoyés à une adresse différente que celle du champ
+% "From"
+%set replyto  "robert.dupont@wanadoo.fr"
+
+% Contenu du header "Organization:" :
+set organization ""
+
+% Le fichier signature :
+set signature ".signature"
+
+%
+%% 2. Paramètres du serveur de news
+%
+
+% L'adresse du serveur de news utilisé par défault est écrit
+% dans le fichier "/etc/news/server"
+% Si un utilisateur veut utiliser un autre serveur de news,
+% il doit doit stocker son adresse dans la varible d'environnement NNTPSERVER.
+
+% Définit la correspondance entre le serveur de news et le fichier "newsrc"
+% (le fichier "newsrc" stocke les informations sur les forums).
+server "news.wanadoo.fr" ".jnewsrc-wanadoo"
+
+% Décommentez la ligne ci-dessous si votre serveur a besoin d'une
+% authentification par login / mot de passe :
+%nnrpaccess "news.wanadoo.fr" "dupont" "a1b2c3"
+
+% Pour lire en ligne, mettre "nntp", pour lire en utilisant un spool local,
+% mettre "spool" :
+set server_object "nntp"
+
+% This can be "nntp" (post directly to the server), "inews" (use external
+% program for posting) or "slrnpull" (spool message for slrnpull to send).
+%set post_object "nntp"
+
+% Set this to zero if you want to leave Message-ID generation to your server
+% or your system does not have a proper unique hostname.
+%set generate_message_id 1
+
+% If non-zero, slrn reads the active file on each startup.  You might want to
+% use this if your network connection is fast or the server has few groups.
+%set read_active 0
+
+% The following variables are only meaningful when using spool mode:
+
+% Basic directory settings
+%set spool_inn_root "/var/lib/news"
+%set spool_root "/var/spool/news"
+%set spool_nov_root "/var/spool/news/over.view"
+
+% These are relative to spool_inn_root unless they start with "/".
+%set spool_active_file "data/active"
+%set spool_activetimes_file "data/active.times"
+%set spool_newsgroups_file "data/newsgroups"
+
+% This value is relative to the directories under spool_nov_root:
+%set spool_nov_file ".overview"
+
+% Whether to check for each article when reading an overview file (slower,
+% but may save you from lots of "article not available" errors).
+%set spool_check_up_on_nov 0
+
+%
+%% 3. Définition des programmes externes à utiliser
+%
+
+% Editeur de texte
+set editor_command "vim -c 'set textwidth=72'"
+
+% Navigateur Web à utiliser en mode console
+set non_Xbrowser "w3m '%s'"
+% Navigateur Web à utiliser en mode graphique
+set Xbrowser "galeon '%s' &"
+
+% Commande pour imprimer
+%set printer_name "lpr -Plp"
+
+% If non-zero, abort posting or email operation if the file was not modified
+% by the editor.
+set abort_unmodified_edits 1
+
+% Set this to one if you want the "From:" header in e-mails to be generated
+% from the hostname / username / realname variable.
+% Note: Not all MTAs are configured to allow this.
+set generate_email_from 0
+
+%
+%% 4. Définition des fichiers et répertoires
+%
+
+% Note : Tous les noms de fichiers de cette section relatifs au home de
+% l'utilisateur, sauf s'ils commencent par un '/'.
+
+% Fichier dans lequel sont conservés les posts
+set save_posts ".news/posts"
+% Fichier dans lequel sont conservés les réponses par mail
+set save_replies ".news/replies"
+% Note: si vous ne mettez rien, slrn ne garderas pas de copies des mails ou
+% des posts.
+
+% File where failed posts are appended.  Use "" to disable saving.
+%set failed_posts_file "dead.letter"
+
+% Fichier de score
+set scorefile ".news/score"
+
+% Name of directory where decoded files are placed.
+set decode_directory ".news"
+
+% Directory where all other files are saved.
+set save_directory ".news"
+
+% Fichier pour les posts ajournés
+set postpone_directory ".news/postponed"
+
+%
+%% 5. Personnalisation des headers et des textes de réponse
+%
+
+% Texte à afficher avant les citations pour un follow-ups / une réponse
+% par mail, avec les paramètres suivants :
+%  %d : date, %D : date (formatted), %r : nom,
+%  %f : adresse e-mail, %s : suject, %m : ID du message, %n : newsgroup
+set followup_string "On %d, %r <%f> wrote :"
+set reply_string "In %n, you wrote :"
+
+% Header à ajouter aux *nouveaux* posts
+%set custom_headers "Mail-Copies-To: nobody"
+
+% Header à ajouter pour les followup / reply / supersedes.
+%set followup_custom_headers "Mail-Copies-To: nobody"
+%set reply_custom_headers "X-newsgroup: %n\nX-realname: %r"
+%set supersedes_custom_headers "X-Superseded-Date: %d"
+
+% These are inserted when sending email CCs of your postings.
+% cc_post_string currently does not support any % escapes.
+%set cc_followup_string "[This message has also been posted to %n.]"
+%set cc_post_string "[This message has also been posted.]"
+
+% Je veux poster avec un header "Date:" qui soit fonction de la timezone
+% dans laquelle je me trouve
+set generate_date_header 1
+
+%
+%% 6. Jeux de caractères / support MIME
+%
+
+% Jeu de caractères pour l'affichage local
+set charset isolatin
+
+% Jeu de caractère déclaré quand je poste en 8 bit. Ne *pas* utiliser la
+% même valeur que pour le paramètre "charset" ci-dessus.
+set mime_charset "iso-8859-15"
+
+%
+%% 7. Préférences pour la fenêtre avec les threads
+%
+
+% Liste des méthodes de tri :
+% If 0, do not sort.  If 1, perform threading.  If 2, sort by subject.
+% If 3, thread then sort result by subject.
+% If 4, sort by score.  If 5, thread then sort by score.
+% If 6, sort by score and subject.
+% If 7, thread, then sort by score and subject.
+% If 8, sort by date with most recent first.
+% If 9, thread, then sort by date with most recent first.
+% If 10, sort by date with most recent last.
+% If 11, thread then sort by date with most recent last.
+set sorting_method 9
+
+% If non-zero, a header with a new subject will start a new thread.
+set new_subject_breaks_threads 0
+
+%
+%% 8. Préférences pour le mode "article"
+%
+
+% Which headers do you want to see by default?
+% You can also match all headers starting with a given string and exclude
+% specific headers by preceding them with "!" (e.g. use "X-,!X-Trace:" to
+% display all the "X-"headers except "X-Trace:").
+visible_headers "From:,Date:,Subject:,Newsgroups:,Followup-To:,Reply-To:,Organization:,User-Agent:,X-Mailer:,X-Newsreader:"
+
+% If non-zero, #v+ and #v- will be interpreted as markers of verbatim lines.
+%set process_verbatim_marks 1
+
+% If non-zero, hide #v+/#v- verbatim marks.
+%set hide_verbatim_marks 0
+
+% If non-zero, hide signature in articles.
+set hide_signature 0
+
+% If non-zero, hide PGP signature in articles.
+%set hide_pgpsignature 0
+
+%
+%% 9. Réglages de l'affichage et des couleurs
+%
+
+% Maximum number of articles to read before slrn will prompt.  Default is 100.
+% Set this to zero to turn of prompting.
+set query_read_group_cutoff 0
+
+% If non-zero, slrn will draw the thread tree using simple ascii characters
+set simulate_graphic_chars 0
+
+% Draw cursor bar ala tin instead of slrn "->" cursor?
+set display_cursor_bar 0
+
+% Set to 1 to have slrn scroll by full page instead of by line.
+set scroll_by_page 1
+
+% Should color be used to indicate the score of an article?
+% (0) scores do not influence colors (1) scores are colored by their value
+% (2) subjects are colored by score  (3) both are colored by score
+%set color_by_score 3
+
+% If non-zero, the subjects of unread articles are highlighted
+set highlight_unread_subjects 1
+
+% If non-zero, URLs are highlighted.
+set highlight_urls 1
+
+% Enables blinking in monochrome mode and allows bright backgrounds in some
+% color terminals:
+%set use_blink 1
+
+% This color object is only used when highlight_unread_subjects is set to 2
+% (see the reference manual for details):
+color unread_subject	"white"		"black"
+mono  unread_subject	"bold"
+
+% These settings are used for color terminals:
+color article		"lightgray"	"black"
+color author		"magenta"	"black"
+color boldtext		"brightblue"	"black"
+color box		"black"		"white"
+color cursor		"brightgreen"	"black"
+color date		"lightgray"	"black"
+color description	"lightgray"	"black"
+color error		"red"		"black"
+color frame		"yellow"	"blue"
+color from_myself	"brightmagenta"	"black"
+color group		"lightgray"	"black"
+color grouplens_display	"lightgray"	"black"
+color header_name	"brightgreen"	"black"
+color header_number	"brightgreen"	"black"
+color headers		"yellow"	"black"
+color neg_score		"green"		"black"
+color pos_score		"blue"		"black"
+color high_score	"red"		"black"
+color italicstext	"magenta"	"black"
+color menu		"yellow"	"blue"
+color menu_press	"lightgray"	"yellow"
+color message		"lightgray"	"black"
+color normal		"lightgray"	"black"
+color pgpsignature	"lightgray"	"black"
+color quotes		"green"		"black"
+color quotes1		"magenta"	"black"
+color quotes2		"brown"		"black"
+color quotes3		"brown"		"black"
+color quotes4		"brown"		"black"
+color quotes5		"brown"		"black"
+color quotes6		"brown"		"black"
+color quotes7		"brown"		"black"
+color response_char	"green"		"black"
+color signature		"red"		"black"
+color selection		"yellow"	"blue"
+color status		"yellow"	"blue"
+color subject		"lightgray"	"black"
+color thread_number	"lightgray"	"black"
+color tilde		"green"		"black"
+color tree		"red"		"black"
+color underlinetext	"cyan"		"black"
+color url		"white"		"black"
+color verbatim		"green"		"black"
+
+%
+%% 10. Key bindings en mode "group"
+%
+
+% Cursor movement:
+setkey group line_down        "\eOB"   % Go to the next group
+setkey group line_down        "\e[B"
+setkey group line_down        "^N"
+setkey group line_up          "\eOA"   % Go to the previous group
+setkey group line_up          "\e[A"
+setkey group line_up          "^P"
+setkey group page_down        "^V"     % Scroll to the next page
+setkey group page_down        "\e[6~"
+setkey group page_down        "\e[G"       % (FreeBSD keycode)
+setkey group page_down        "^D"
+setkey group page_up          "\eV"    % Scroll to the previous page
+setkey group page_up          "\e[5~"
+setkey group page_up          "\e[I"       % (FreeBSD keycode)
+setkey group page_up          "^U"
+setkey group bob              "\e<"    % Go to the bottom of the list
+setkey group bob              "^K\eOB"
+setkey group bob              "^K\e[B"
+setkey group eob              "\e>"    % Go to the top of the list
+setkey group eob              "^K\eOB"
+setkey group eob              "^K\e[B"
+setkey group group_search_backward "\\"% Group keyword search backward
+setkey group group_search_forward  "/" % Group keyword search forward
+
+% Actions:
+setkey group select_group     " "      % Enter the current newsgroup
+setkey group select_group     "\r"
+setkey group post             "P"      % Post an article
+setkey group post_postponed   "\eP"    % Post or edit a postponed article
+setkey group refresh_groups   "G"      % Get new news from server
+setkey group toggle_scoring   "K"      % Select scoring mode
+setkey group repeat_last_key  "."      % Repeat last key sequence
+setkey group evaluate_cmd     "^X\e"   % Read line and interpret it as S-Lang
+setkey group suspend          "^Z"     % Suspend slrn
+setkey group quit             "Q"      % Quit slrn
+
+% Group management:
+setkey group catchup          "C"      % Mark all articles as read
+setkey group uncatchup        "\eu"    % Mark all articles as unread
+setkey group add_group        "a"      % Add a new newsgroup
+setkey group subscribe        "S"      % Subscribe to the current newsgroup
+setkey group unsubscribe      "U"      % Unsubscribe from the current newsgroup
+setkey group move_group       "m"      % Move newsgroup to a different location
+setkey group transpose_groups "^X^T"   % Transpose position of groups
+setkey group save_newsrc      "X"      % Force a save of the newsrc file
+
+% Display:
+setkey group toggle_group_formats "\033A" % Toggle group display formats
+setkey group toggle_hidden    "l"      % Toggle display of hidden groups
+setkey group toggle_list_all  "L"      % Toggle listing of unsubscribed groups
+setkey group redraw           "^L"     % Redraw the screen
+setkey group redraw           "^R"
+setkey group help             "?"      % Display a help screen
+
+%
+%% 11. Key bindings en mode "article"
+%
+
+% General movement:
+setkey article next                    "n"  % next unread article
+setkey article previous                "p"  % previous unread article
+setkey article skip_to_next_group      "N"  % go to the next group
+setkey article skip_to_next_group      "\e\e[C"
+setkey article skip_to_next_group      "\e\eOC"
+setkey article skip_to_previous_group  "\e\e[D"  % go to the previous group
+setkey article skip_to_previous_group  "\e\eOD"
+setkey article next_high_score         "!"  % next article with high score
+setkey article next_same_subject       "="  % next article with same subject
+setkey article goto_last_read          "L"  % go to the last read article
+
+% Actions:
+setkey article post                 "P"		% Post a new article
+setkey article post_postponed       "\eP"	% Post/edit a postponed article
+setkey article followup             "r"		% Post a followup
+setkey article reply                "f"	% Reply to poster
+setkey article forward              "F"		% Forward posting via mail
+setkey article supersede            "\e^S"	% Supersede article
+setkey article cancel               "\e^C"	% Cancel article
+setkey article save                 "O"		% Save article
+setkey article pipe                 "|"		% Pipe article
+setkey article print                "y"		% Print article
+setkey article decode               ":"		% Decode article
+setkey article suspend              "^Z"	% Suspend slrn
+setkey article quit                 "q"		% Quit slrn
+setkey article fast_quit            "Q"		% Quit slrn immediately
+
+% Moving in the article pager:
+setkey article article_line_down    "\eOD"	% Scroll article down one line
+setkey article article_line_down    "\e[D"
+setkey article article_line_up      "\e\eOB"	% Scroll article up one line
+setkey article article_line_up      "\e\e[B"
+setkey article article_page_down    " "		% Scroll article down one page
+setkey article article_page_up      "^?"	% Scroll article up one page
+setkey article article_page_up      "b"		% Scroll article up one page
+setkey article article_eob          ">"		% Move to the end of the article
+setkey article article_bob          "<"		% Move to the beginning
+setkey article article_left         "\eOD"	% Pan article to the left
+setkey article article_left         "\e[D"
+setkey article article_right        "\eOC"	% Pan article to the right
+setkey article article_right        "\e[C"
+setkey article article_search       "/"		% Search forward in the article
+setkey article skip_quotes          "\t"	% Skip beyond quoted text
+setkey article forward_digest       "g"		% Skip to next digest
+
+% Moving in the header display:
+setkey article header_line_down      "\eOB"	% Move to next article
+setkey article header_line_down      "\e[B"
+setkey article header_line_down      "^N"
+setkey article header_line_up        "\eOA"	% Move to previous article
+setkey article header_line_up        "\e[A"
+setkey article header_line_up        "^P"
+setkey article header_page_down      "^V"       % Scroll down one page
+setkey article header_page_down      "\e[6~"
+setkey article header_page_down      "\e[G"         % (FreeBSD keycode)
+setkey article header_page_down      "^D"
+setkey article header_page_up        "\eV"	% Scroll up one page
+setkey article header_page_up        "\e[5~"
+setkey article header_page_up        "\e[I"         % (FreeBSD keycode)
+setkey article header_page_up        "^U"
+setkey article header_eob            "\e>"	% Go to last article in group
+setkey article header_bob            "\e<"	% Go to first article in group
+setkey article goto_article          "j"	% Move to article (number)
+setkey article author_search_forward   "a"	% Author search forward
+setkey article author_search_backward  "A"	% Author search backward
+setkey article subject_search_forward  "s"	% Subject search forward
+setkey article subject_search_backward "S"	% Subject search backward
+
+% Marking as read/unread:
+setkey article delete                  "d"	% Mark article as read
+setkey article undelete                "u"	% Mark article as unread
+setkey article delete_thread           "\ed"	% Mark (Sub-)Thread as read
+setkey article catchup_all             "c"	% Mark all articles as read
+setkey article catchup_all             "\ec"
+setkey article catchup                 "\eC"	% Catchup (up to this article)
+setkey article uncatchup_all           "\eu"	% Mark all articles as unread
+setkey article uncatchup               "\eU"	% Uncatchup (up to this article)
+setkey article expunge                 "x"	% Remove all read articles
+
+% Display properties:
+setkey article toggle_headers          "t"	% Full headers (on/off)
+setkey article toggle_rot13            "\eR"	% Toggle ROT-13 decryption
+setkey article toggle_quotes           "T"	% Display quoted lines (on/off)
+setkey article toggle_signature        "\\"	% Show signature (on/off)
+setkey article wrap_article            "W"	% Wrap long lines (on/off)
+setkey article show_spoilers           "\e?"	% Reveal spoilers (on/off)
+setkey article toggle_pgpsignature     "]"	% Show PGP signature (on/off)
+setkey article toggle_verbatim_marks   "["	% Show verbatim marks (on/off)
+setkey article enlarge_article_window  "^"	% Enlarge the article window
+setkey article shrink_article_window   "^^"	% Shrink the article window
+setkey article zoom_article_window     "z"	% Maximize/Unmaximize article
+setkey article hide_article            "h"	% Hide/Show the article window
+setkey article browse_url              "U"	% Search for URL and follow it
+setkey article toggle_sort             "\eS"	% Select threading method
+setkey article toggle_collapse_threads "\et"	% Collapse/Uncollapse thread
+setkey article toggle_header_formats   "\ea"	% Toggle header display formats
+setkey article redraw                  "^L"	% Redraw screen
+setkey article redraw                  "^R"	% Redraw screen
+setkey article help                    "?"	% Display help screen
+
+% Miscellaneous actions:
+setkey article create_score            "K"	% Create a scorefile entry
+setkey article view_scores             "v"      % Show which rules matched
+setkey article locate_article          "\el"	% Locate article by Message-ID
+setkey article get_children_headers    "\e^P"	% Find all children
+setkey article get_parent_header       "\ep"	% Reconstruct thread
+setkey article mark_spot               ";"	% Mark current article position
+setkey article exchange_mark           ","	% Return to marked article
+setkey article tag_header              "#"	% Numerically tag article
+setkey article untag_headers           "\e#"	% Remove all numerical tags
+setkey article toggle_header_tag       "*"	% Set/remove header tag
+setkey article repeat_last_key         "."	% Repeat last key sequence
+setkey article grouplens_rate_article  "0"	% Rate article with grouplens
+setkey article evaluate_cmd            "^X\e"   % Interpret line as S-Lang
+
+%
+%% Command prompt key bindings
+%
+
+setkey readline bol		 "^A"		% Beginning of line
+setkey readline eol		 "^E"		% End of line
+setkey readline right		 "\e[C"		% Move right
+setkey readline left		 "\e[D"		% Move left
+setkey readline bdel		 "^H"		% Delete backward
+setkey readline bdel		 "^?"		% Delete Backward
+setkey readline del		 "^D"		% Delete Foreword
+setkey readline delbol		 "^U"		% Delete to Beginning of line
+setkey readline delbow		 "^W"		% Delete to Beginning of word
+setkey readline deleol		 "^K"		% Delete to End of line
+setkey readline trim		 "\e/"		% Trim whitespace
+setkey readline quoted_insert	 "^Q"		% Quoted insert
+setkey readline complete	 "\t"		% Complete filename
+setkey readline cycle		 " "		% Cycle among filenames

@@ -1,0 +1,79 @@
+# ~/.procmailrc
+# Fichier de configuration de Procmail, un programme qui trie les mails
+# Formation Debian GNU/Linux par Alexis de Lattre
+# http://formation-debian.via.ecp.fr/
+
+# Plus d'informations sur les options dans "man procmailrc"
+# et des exemples dans "man procmailex"
+
+# DEBUT des paramètres de configuration
+
+# Je ne veux pas trop de messages dans les logs
+VERBOSE=off
+
+# Répertoire contenant les mailboxes
+MAILDIR=$HOME/mail
+
+# Boîte aux lettres par défaut, pour les messages qui ne satisferont aucun
+# critère de tri
+DEFAULT=inbox/
+
+# Fichier de log de procmail
+LOGFILE=$HOME/.procmail.log
+
+# FIN des paramètres de configuration
+
+# DEBUT du tri des mails
+
+# Rajoute un header contenant le nombre de lignes à tous les mails
+:0bw
+LINES=|wc -l | tr -d " "
+:0fhw
+|formail -a "Lines: $LINES"
+
+# Procmail lit les règles dans l'ordre, et dès qu'une règle est validée,
+# le mail est déplacé dans la mailbox adéquate.
+
+# On commence par aiguiller les mails des mailing-lists qui ne contiennent
+# pas de spam
+
+# DEBUT des mailing-lists SANS SPAM
+
+# Mailing-list "Teper" que je trie avec la destination (Champ To ou Cc)
+:0
+* ^TOteperB13-2.03@eleves.via.ecp.fr
+teper/
+
+# Mailing-list "vls-devel" que je trie avec le champ "X-list"
+:0
+* ^X-list: vls-devel
+vls-devel/
+
+# Mailing-list "linux-dvb" que je trie avec le Champ "Subject"
+:0
+* ^Subject: [linux-dvb]
+linux-dvb/
+
+# FIN des mailing-lists SANS SPAM
+
+# Utilisation de SPAMASSASSIN, qui rajoute un header X-Spam-Status:
+:0fw
+| spamassassin -P
+
+# Les mails considérés par spamassassin comme étant du spam vont dans
+# la mailbox "spam"
+:0
+* ^X-Spam-Status: Yes
+spam/
+
+# DEBUT des mailing-lists AVEC SPAM
+
+# Mailing-list "ml-ac-spam" que je trie avec le champ "X-list"
+:0
+* ^X-list: ml-ac-spam
+ml-ac-spam/
+
+# FIN des mailing-lists AVEC SPAM
+
+# FIN du tri des mails
+# Tout ce qui n'a pas été trié jusqu'ici va automatiquement dans la mailbox $DEFAULT

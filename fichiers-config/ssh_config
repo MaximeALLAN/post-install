@@ -1,0 +1,36 @@
+# /etc/ssh/ssh_config ou ~/.ssh/config
+# Fichier de configuration du client OpenSSH
+# Formation Debian GNU/Linux par Alexis de Lattre
+# http://formation-debian.via.ecp.fr/
+
+# Connexions partagées :
+# Lorsque l'on ouvre une connexion vers un serveur, OpenSSH peut
+# la définir comme « connexion maître », et placer dans le système
+# de fichiers un connecteur (socket Unix).
+# Lorsque l'on ouvre une seconde connexion vers ce même serveur, OpenSSH
+# utilise alors ce connecteur local, et multiplexe les deux connexion, plutôt
+# que d'ouvrir une nouvelle connexion SSH.
+# Concrètement, cela évite de multiplier les connexions réseau, et
+# cela permet de ne saisir qu'une fois le mot de passe. Toutefois, la connexion
+# maître ne pourra pas être fermée tant qu'une connexion secondaire est
+# utilisée.
+
+# Chemin où placer le connecteur maître pour les connexions partagées.
+# Les variables sont remplacées ainsi :
+# %r : nom d'utilisateur distant ;
+# %h : nom d'hôte distant ;
+# %p : port réseau distant (normalement, le 22).
+ControlPath /tmp/ssh-%r@%h:%p
+# Placer automatiquement la première connexion en mode maître, et
+# la réutiliser pour les connexions suivantes (tant que la première
+# n'est pas fermée…)
+ControlMaster auto
+
+# Se connecter automatiquement en tant que toto sur les serveurs
+# <example.org> et <example.net>. Cela permet de taper simplement
+# % ssh example.org
+# plutôt que :
+# % ssh toto@example.org
+# On peut mettre autant de blocs semblables que l'on veut.
+Host example.org example.net
+User toto

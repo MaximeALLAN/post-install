@@ -1,0 +1,57 @@
+# /etc/postfix/main.cf
+# Fichier de configuration de Postfix
+# Formation Debian GNU/Linux par Alexis de Lattre
+# http://formation-debian.via.ecp.fr/
+
+# Pour plus d'informations, consulter le manuel de postconf(5),
+# ou installer le package "postfix-doc"
+# et lire /usr/share/doc/postfix/html/index.html
+# ou lire la traduction française disponible à l'adresse
+# http://cjovet.free.fr/cours/postfix.htm
+
+# Protocoles réseau pour lesquels le serveur doit maintenir une écoute.
+# Valeurs possibles : ipv4, ipv6 ou all
+inet_protocols = all
+
+# Nom du fichier d'alias (ce sont en fait les paramètres par défaut,
+# donc il n'est pas vraiment nécessaire de le préciser)
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+# Nom du fichier de correspondance pour les adresses virtuelles
+#virtual_maps = hash:/etc/postfix/virtual
+
+# Nom de domaine
+# Ce paramètre ne sert pas directement, mais peut être utilisé par la suite.
+mydomain = via.ecp.fr
+
+# Nom d'hôte
+# Ce paramètre ne sert pas directement, mais peut être utilisé par la suite,
+# et est utilisé comme valeur par défaut de plusieurs paramètres
+myhostname = footix.$mydomain
+
+# Extension pour les mails envoyés depuis la machine
+myorigin = /etc/mailname
+
+# Liste des domaines pour lesquels le serveur accepte le mail
+# ET délivre le mail en local
+mydestination = $myhostname, localhost.$mydomain, localhost
+
+# Liste des domaines pour lesquels le serveur accepte le mail
+# ET le relaie à d'autres serveurs de mail
+#relay_domains =
+
+# Dans le cas où on a besoin d'un serveur pour relayer les mails sortants :
+#relayhost = smtp.free.fr
+
+# Réseaux en lesquels j'ai confiance
+# i.e. pour lequel mon serveur mail accepte de relayer du mail
+# ATTENTION : il ne faut pas mettre n'importe quoi pour que le serveur
+# mail ne devienne pas un relai pour le spam !
+mynetworks = 127.0.0.0/8 [::1]/128
+
+# Commande à exécuter pour délivrer les mails en local
+mailbox_command = procmail -a "$EXTENSION"
+
+# Taille maximale pour les mailbox (0 = pas de limite)
+mailbox_size_limit = 0

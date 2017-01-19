@@ -1,0 +1,131 @@
+; /var/cache/bind/mondomaine.org.zone
+; Fichier de zone "type" pour le domaine "mondomaine.org"
+; Formation Debian GNU/Linux par Alexis de Lattre
+; http://formation-debian.via.ecp.fr/
+
+; Utiliser la commande
+; "named-checkzone mondomaine.org /var/cache/bind/mondomaine.org.zone"
+; pour vérifier la validité du fichier de zone.
+
+; Utiliser la commande "named-checkconf" pour vérifier la validité du fichier
+; de configuration /etc/bind/named.conf
+
+; ATTENTION : ne pas oublier de mettre à jour le "serial" à chaque
+; modification des enresgitrements de ce fichier.
+
+
+; ATTENTION : dans les fichiers de zone, les noms DNS complets doivent se
+; terminer par des points (par exemple "master.mondomaine.org.")
+; Tous les noms DNS qui ne sont pas complets (i.e. qui ne se terminent
+; pas par un point) se terminent implicitement par "mondomaine.org."
+
+
+; TTL (Time To Live) par défaut.
+; Le TTL permet de dire aux serveurs DNS tiers qu'ils ne devront pas
+; garder les enregistrements de notre zone en cache au dela de cette
+; durée. On met une journée.
+$TTL 1d
+
+
+; ENREGISTREMENT "SOA" (Start Of a zone of Authority).
+
+; Cet enregistrement donne le nom du serveur DNS primaire et l'adresse mail
+; à laquelle on peut joindre l'administrateur du domaine.
+; Par exemple, le serveur DNS primaire s'appellera "master" et
+; l'adresse mail de l'administrateur sera <root@master.mondomaine.org>
+@	SOA	master.mondomaine.org.	root.dns.mondomaine.org. (
+
+; Serial (ou "Numéro de série") de la zone.
+; Il permet aux serveurs secondaires de savoir s'ils ont besoin
+; de se mettre à jour en faisant un transfert de zone avec le serveur
+; primaire ou non en comparant leurs "serial" pour cette zone.
+; Par convention, il est constitué de la date du jour au format AAAAMMJJ
+; suivi du nombre de modifications déjà effectuées sur le fichier de zone
+; dans la journée + 1.
+; Par exemple, nous sommes le 1er mai 2003, et c'est la deuxième fois
+; que je modifie le fichier de zone aujourd'hui :
+	2003050102
+
+; Refresh.
+; Intervalle de temps en secondes pendant lequel les serveurs DNS
+; secondaires attendent avant de vérifier (et éventuellement de
+; mettre à jour) l'enregistrement SOA du serveur DNS primaire.
+; On met un 1 journée.
+	1d
+
+; Retry.
+; Intervalle de temps en secondes durant lequel les serveurs DNS
+; secondaires attendent avant de réessayer une requête vers le serveur DNS
+; primaire si ce dernier n'est pas accessible.
+; On met 5 minutes.
+	5m
+
+; Expire.
+; Intervalle de temps en secondes durant lequel les serveurs DNS
+; secondaires attendent avant de rejeter les informations de zones s'ils
+; n'ont pas pu contacter le serveur DNS primaire.
+; On met 1 mois (2592000 secondes).
+	2592000
+
+; TTL (Time To Live) minimum.
+; Durée minimum du TTL d'un enregistrement DNS de la zone.
+; On met 1 journée.
+	1d
+)
+
+
+; ENREGISTREMENTS "NS"
+
+; Ces enregistrements donnent les noms DNS des serveurs primaires
+; et secondaires
+mondomaine.org.		NS	ns0
+mondomaine.org.		NS	ns1
+
+
+; ENREGISTREMENTS "A"
+
+; Les enregistrements "A" donnent les correspondances DNS <-> IP classiques
+
+; Pour qu'une requête DNS "ordi1.mondomaine.org" renvoie "12.42.112.201"
+ordi1		A	12.42.112.201
+
+ordi2		A	12.42.112.202
+ordi3		A	12.42.112.203
+ns0			A	12.42.102.188
+ns1			A	42.128.241.12
+
+
+; ENREGISTREMENTS "CNAME"
+
+; Le champ "CNAME" est utilisé pour faire des "alias DNS",
+; c'est-à-dire avoir une IP qui répond à plusieurs noms DNS.
+
+; Par exemple, pour qu'une requête DNS "www.mondomaine.org" renvoie
+; aussi l'IP d'"ordi1" :
+www			CNAME	ordi1
+
+mailhost	CNAME	ordi1
+ftp			CNAME	ordi2
+irc			CNAME	ordi3
+
+
+; ENREGISTREMENTS "MX"
+
+; Le champ "MX" est utilisé pour les envois de mail.
+; Quand un serveur de mail doit envoyer un mail à l'adresse
+; <alexis@via.ecp.fr>, il fait une requête DNS de type "MX" sur
+; "via.ecp.fr". Il obtient en retour une liste d'adresses IP classées
+; avec des priorités. Il essaye alors d'envoyer le mail au serveur
+; principale, s'il est injoignable au serveur secondaire, etc...
+
+; Pour les adresses @mondomaine.org, le serveur principal est "ordi1",
+; le serveur secondaire est "ordi2" et le tertiaire est "ordi3" :
+mondomaine.org.		MX	10	ordi1
+mondomaine.org.		MX	20	ordi2
+mondomaine.org.		MX	30	ordi3
+
+; ATTENTION : on ne met pas de "MX" sur un "CNAME",
+; mais uniquement sur un "A" !
+
+; Si on veut inclure un autre fichier de ce fichier :
+;$INCLUDE nom_de_l'autre_fichier
