@@ -16,7 +16,7 @@ LISTE="vim zsh curl iftop htop tcpdump tree locate"
 
 # Test que le script est lance en root
 if [ $EUID -ne 0 ]; then
-  echo -e "\nLe script doit êe lance en root: # sudo $0" 1>&2
+  echo -e "\nLe script doit etre lance en root: # sudo $0" 1>&2
   exit 1
 fi
 
@@ -56,5 +56,5 @@ cp fichiers-config/vimrc /etc/vim/ -f
 
 
 echo -e "\n### Configuration finit. Il faut vous deconnecter/reconnecter pour que les modifications prennents effets"
-echo "### Lors de la premié connexion, il est prérable de choisir l'option 2 pour ZSH."
+echo "### Lors de la premiere connexion, il est prérable de choisir l'option 2 pour ZSH."
 # Fin du script
