@@ -50,7 +50,6 @@ mv dir_colors /etc/
 curl https://raw.githubusercontent.com/GeoHolz/Extract/master/extract.sh >> /etc/zsh/zshrc
 sed -i 's/bash/zsh/g' /etc/passwd
 
-
 # VIM
 cd /tmp/post-install/
 cp fichiers-config/vimrc /etc/vim/ -f
