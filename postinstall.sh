@@ -40,11 +40,11 @@ apt -y install $LISTE
 #--------------
 
 echo -e "\n### Installation des fichiers de configuration \n"
-cd fichiers-config
+cd /tmp/post-install/fichiers-config
 
 echo -e "\n### Configuration de ZSH et VIM \n"
 # ZSH
-cd fichiers-config/
+cd /tmp/post-install/fichiers-config/
 mv zshrc zshenv zlogin zlogout /etc/zsh/
 mv dir_colors /etc/
 curl https://raw.githubusercontent.com/GeoHolz/Extract/master/extract.sh >> /etc/zsh/zshrc
@@ -52,7 +52,7 @@ sed -i 's/bash/zsh/g' /etc/passwd
 
 
 # VIM
-cd /tmp/perso/
+cd /tmp/post-install/
 cp fichiers-config/vimrc /etc/vim/ -f
 
 
