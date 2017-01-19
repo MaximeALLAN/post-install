@@ -47,7 +47,7 @@ echo -e "\n### Configuration de ZSH et VIM \n"
 cd /tmp/post-install/fichiers-config/
 mv zshrc zshenv zlogin zlogout /etc/zsh/
 mv dir_colors /etc/
-curl https://raw.githubusercontent.com/GeoHolz/Extract/master/extract.sh >> /etc/zsh/zshrc
+cat /tmp/post-install/extract >> /etc/zsh/zshrc
 sed -i 's/bash/zsh/g' /etc/passwd
 
 # VIM
