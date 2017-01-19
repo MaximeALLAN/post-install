@@ -11,7 +11,7 @@ VERSION="0.1"
 
 #=============================================================================
 # Liste des applications ànstaller: A adapter a vos besoins
-LISTE="vim zsh curl iftop htop tcpdump"
+LISTE="vim zsh curl iftop htop tcpdump tree locate"
 #=============================================================================
 
 # Test que le script est lance en root
