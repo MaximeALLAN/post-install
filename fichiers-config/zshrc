@@ -1,8 +1,6 @@
 # /etc/zsh/zshrc ou ~/.zshrc
 # Fichier de configuration principal de zsh, lu au lancement des shells interactifs
 # (et non des shells d'interprétation de fichier)
-# Formation Debian GNU/Linux par Alexis de Lattre
-# http://formation-debian.via.ecp.fr/
 
 ################
 # 1. Les alias #
