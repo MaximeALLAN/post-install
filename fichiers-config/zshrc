@@ -30,6 +30,98 @@ alias md='mkdir'
 alias rd='rmdir'
 alias upgrade='apt-get update && apt-get upgrade && apt-get clean'
 
+# Short command aliases
+alias 'l=ls'
+alias 'la=ls -A'
+alias 'll=ls -l'
+alias 'llh=ls -l --si'
+alias 'lq=ls -Q'
+alias 'lr=ls -R'
+alias 'lrs=ls -lrS'
+alias 'lrt=ls -lrt'
+alias 'lrta=ls -lrtA'
+alias 'lrth=ls -lrth --si'
+alias 'lrtha=ls -lrthA --si'
+alias 'j=jobs -l'
+alias 'kw=kwrite'
+alias 'tf=tail -F'
+alias 'grep=grep --colour --devices=skip'
+alias 'vnice=nice -n 20 ionice -c 3'
+alias 'get_iplayer=get_iplayer --nopurge'
+alias 'get-iplayer=get-iplayer --nopurge'
+alias "tree=tree -I 'CVS|*~'"
+alias 'lo=libreoffice'
+alias 'synchist=fc -RI'
+alias 'zh=grep --text ~/.zsh_history -e'
+
+# Useful KDE integration (see later for definition of z)
+alias 'k=z kate -u' # -u is reuse existing session if possible
+
+# These are useful with the Dvorak keyboard layout
+alias 'h=ls'
+alias 'ha=la'
+alias 'hh=ll'
+alias 'hhh=llh'
+alias 'hq=lq'
+alias 'hr=lr'
+alias 'hrt=lrt'
+alias 'hrs=lrs'
+
+# Play safe!
+alias 'rm=rm -i'
+alias 'mv=mv -i'
+alias 'cp=cp -i'
+
+# For Git
+alias 'gk=z gitk --all'
+alias 'gs=git status' # (NB overriding GhostScript)
+alias 'gd=git diff'
+alias 'gg=z git gui'
+alias 'git-stashpullpop=git stash && git pull --rebase && git stash pop'
+alias 'gl=git log --graph --abbrev-commit --pretty=oneline --decorate'
+
+# For convenience
+alias 'mkdir=mkdir -p'
+alias 'dmesg=dmesg --ctime'
+alias 'df=df --exclude-type=tmpfs'
+alias 'd.=df -h . |sed 1d'
+alias 'dus=du -msc * .*(N) | sort -n'
+alias 'dus.=du -msc .* | sort -n'
+alias 'fcs=(for i in * .*(N); do echo $(find $i -type f | wc -l) "\t$i"; done) | sort -n'
+alias 'fcs.=(for i in .*; do echo $(find $i -type f | wc -l) "\t$i"; done) | sort -n'
+alias 'last=last -a'
+alias 'zap=clear; echo -en "\e[3J"'
+alias 'rmedir=rmdir -v **/*(/^F)'
+alias 'xmlindent=xmlindent -t -f -nbe'
+
+# Typing errors...
+alias 'cd..=cd ..'
+
+# Global aliases (expand whatever their position)
+#  e.g. find . E L
+alias -g C='| wc -l'
+alias -g H='|  head'
+alias -g L='|& less'
+alias -g S='| sort'
+alias -g T='|  tail'
+unglobalalias() {
+    unalias 'C'
+    unalias 'H'
+    unalias 'L'
+    unalias 'S'
+    unalias 'T'
+}
+
+# Log file viewing
+lastlogdir=logs
+alias taillast='tail -f $lastlogdir/*(om[1])'
+alias catlast='< $lastlogdir/*(om[1])'
+alias lesslast='less $lastlogdir/*(om[1])'
+
+# Quick TSV/CSV file formatting
+alias tsv='column -n -s "       " -t'
+alias csv='column -n -s , -t'
+
 
 #######################################
 # 2. Prompt et définition des touches #
